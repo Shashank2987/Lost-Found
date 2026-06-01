@@ -14,7 +14,7 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return "College Lost & Found Running"
+    return "Server Active"
 
 if __name__ == "__main__":
     app.run(debug=True)
