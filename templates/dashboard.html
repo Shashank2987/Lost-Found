@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mt-5">
+
+    <h1>
+        Welcome, {{ user.name }}
+    </h1>
+
+    <p class="text-secondary">
+        CampusFind Dashboard
+    </p>
+
+    <a
+        href="/logout"
+        class="btn btn-danger">
+
+        Logout
+
+    </a>
+
+</div>
+
+{% endblock %}
