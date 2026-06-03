@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold">
+            Found Items
+        </h1>
+
+        <p class="text-secondary">
+            Browse items that have been found across campus.
+        </p>
+
+    </div>
+
+    <div class="row">
+
+        {% for item in items %}
+
+        <div class="col-md-6 col-lg-4 mb-4">
+
+            <div class="glass rounded-4 p-4 h-100">
+
+                <div class="d-flex justify-content-between">
+
+                    <h5>
+                        {{ item.title }}
+                    </h5>
+
+                    <span class="badge bg-success">
+    FOUND
+</span>
+
+                </div>
+
+                <p class="text-secondary mt-3">
+                    {{ item.description }}
+                </p>
+
+                <hr>
+
+                <p>
+                    📍 {{ item.location }}
+                </p>
+
+                <small class="text-secondary">
+                    {{ item.created_at.strftime('%d %b %Y') }}
+                </small>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

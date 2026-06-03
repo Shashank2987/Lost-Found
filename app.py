@@ -84,9 +84,10 @@ def login():
 def dashboard():
 
     items = Item.query.filter_by(
-        user_id=current_user.id
+    user_id=current_user.id,
+    status="FOUND"
     ).order_by(
-        Item.created_at.desc()
+    Item.created_at.desc()
     ).all()
 
     return render_template(
@@ -125,6 +126,57 @@ def add_lost():
         return redirect("/dashboard")
 
     return render_template("add_lost.html")
+@app.route("/add-found", methods=["GET", "POST"])
+@login_required
+def add_found():
 
+    if request.method == "POST":
+
+        title = request.form["title"]
+        description = request.form["description"]
+        location = request.form["location"]
+
+        new_item = Item(
+            title=title,
+            description=description,
+            location=location,
+            status="FOUND",
+            user_id=current_user.id
+        )
+
+        db.session.add(new_item)
+        db.session.commit()
+
+        return redirect("/dashboard")
+
+    return render_template("add_found.html")
+@app.route("/items")
+@login_required
+def items():
+
+    all_items = Item.query.filter_by(
+    status="FOUND"
+).order_by(
+    Item.created_at.desc()
+).all()
+
+    return render_template(
+        "items.html",
+        items=all_items
+    )
+@app.route("/delete-item/<int:item_id>")
+@login_required
+def delete_item(item_id):
+
+    item = Item.query.get_or_404(item_id)
+
+    # Security check
+    if item.user_id != current_user.id:
+        return "Unauthorized", 403
+
+    db.session.delete(item)
+    db.session.commit()
+
+    return redirect("/dashboard")
 if __name__ == "__main__":
     app.run(debug=True)
