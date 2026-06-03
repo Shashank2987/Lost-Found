@@ -27,7 +27,7 @@ with app.app_context():
 @app.route("/")
 def home():
     return render_template("home.html")
-from models import db, User
+from models import db, User , Item
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -94,5 +94,30 @@ def logout():
     logout_user()
 
     return redirect("/")
+@app.route("/add-lost", methods=["GET", "POST"])
+@login_required
+def add_lost():
+
+    if request.method == "POST":
+
+        title = request.form["title"]
+        description = request.form["description"]
+        location = request.form["location"]
+
+        new_item = Item(
+            title=title,
+            description=description,
+            location=location,
+            status="LOST",
+            user_id=current_user.id
+        )
+
+        db.session.add(new_item)
+        db.session.commit()
+
+        return redirect("/dashboard")
+
+    return render_template("add_lost.html")
+
 if __name__ == "__main__":
     app.run(debug=True)

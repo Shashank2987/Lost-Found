@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+
+    <div class="col-md-6">
+
+        <div class="glass p-5 rounded-4">
+
+            <h2 class="text-center mb-4">
+                Report Lost Item
+            </h2>
+
+            <form method="POST">
+
+                <div class="mb-3">
+
+                    <label class="form-label text-white">
+                        Item Title
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="title"
+                        placeholder="Black Wallet"
+                        required>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label text-white">
+                        Description
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        name="description"
+                        rows="4"
+                        required></textarea>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label text-white">
+                        Last Seen Location
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="location"
+                        placeholder="Central Library"
+                        required>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-main w-100">
+
+                    Submit Lost Item
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
