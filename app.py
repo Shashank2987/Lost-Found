@@ -1,3 +1,4 @@
+from flask import Flask, render_template, request, redirect
 from flask_login import (
     LoginManager,
     login_user,
@@ -5,29 +6,45 @@ from flask_login import (
     login_required,
     current_user
 )
-from flask import Flask, render_template, request, redirect, flash
-from werkzeug.security import generate_password_hash
-from flask import Flask
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from config import Config
-from models import db
-from werkzeug.security import check_password_hash
+from models import db, User, Item
+
+
+# ---------------- APP INIT ----------------
+
 app = Flask(__name__)
+app.config.from_object(Config)
+
+db.init_app(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-app.config.from_object(Config)
+
+
+# ---------------- USER LOADER ----------------
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-db.init_app(app)
+
+
+# ---------------- CREATE TABLES ----------------
 
 with app.app_context():
     db.create_all()
 
+
+# ---------------- HOME ----------------
+
 @app.route("/")
 def home():
     return render_template("home.html")
-from models import db, User , Item
+
+
+# ---------------- REGISTER ----------------
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -54,9 +71,13 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect("/")
+        return redirect("/login")
 
     return render_template("register.html")
+
+
+# ---------------- LOGIN ----------------
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -67,27 +88,27 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(
-            user.password,
-            password
-        ):
+        if user and check_password_hash(user.password, password):
 
             login_user(user)
-
             return redirect("/dashboard")
 
         return "Invalid Email or Password"
 
     return render_template("login.html")
+
+
+# ---------------- DASHBOARD ----------------
+
 @app.route("/dashboard")
 @login_required
 def dashboard():
 
     items = Item.query.filter_by(
-    user_id=current_user.id,
-    status="FOUND"
+        user_id=current_user.id,
+        status="FOUND"
     ).order_by(
-    Item.created_at.desc()
+        Item.created_at.desc()
     ).all()
 
     return render_template(
@@ -95,37 +116,20 @@ def dashboard():
         user=current_user,
         items=items
     )
+
+
+# ---------------- LOGOUT ----------------
+
 @app.route("/logout")
 @login_required
 def logout():
 
     logout_user()
-
     return redirect("/")
-@app.route("/add-lost", methods=["GET", "POST"])
-@login_required
-def add_lost():
 
-    if request.method == "POST":
 
-        title = request.form["title"]
-        description = request.form["description"]
-        location = request.form["location"]
+# ---------------- ADD FOUND ITEM ----------------
 
-        new_item = Item(
-            title=title,
-            description=description,
-            location=location,
-            status="LOST",
-            user_id=current_user.id
-        )
-
-        db.session.add(new_item)
-        db.session.commit()
-
-        return redirect("/dashboard")
-
-    return render_template("add_lost.html")
 @app.route("/add-found", methods=["GET", "POST"])
 @login_required
 def add_found():
@@ -136,10 +140,14 @@ def add_found():
         description = request.form["description"]
         location = request.form["location"]
 
+        # OPTIONAL (if you added category)
+        category = request.form.get("category", "Other")
+
         new_item = Item(
             title=title,
             description=description,
             location=location,
+            category=category,
             status="FOUND",
             user_id=current_user.id
         )
@@ -150,27 +158,31 @@ def add_found():
         return redirect("/dashboard")
 
     return render_template("add_found.html")
+
+
+# ---------------- ITEMS FEED (FOUND ONLY) ----------------
+
 @app.route("/items")
 @login_required
 def items():
 
     all_items = Item.query.filter_by(
-    status="FOUND"
-).order_by(
-    Item.created_at.desc()
-).all()
+        status="FOUND"
+    ).order_by(
+        Item.created_at.desc()
+    ).all()
 
-    return render_template(
-        "items.html",
-        items=all_items
-    )
+    return render_template("items.html", items=all_items)
+
+
+# ---------------- DELETE ITEM ----------------
+
 @app.route("/delete-item/<int:item_id>")
 @login_required
 def delete_item(item_id):
 
     item = Item.query.get_or_404(item_id)
 
-    # Security check
     if item.user_id != current_user.id:
         return "Unauthorized", 403
 
@@ -178,5 +190,20 @@ def delete_item(item_id):
     db.session.commit()
 
     return redirect("/dashboard")
+
+
+# ---------------- ITEM DETAIL PAGE ----------------
+
+@app.route("/item/<int:item_id>")
+@login_required
+def item_detail(item_id):
+
+    item = Item.query.get_or_404(item_id)
+
+    return render_template("item_detail.html", item=item)
+
+
+# ---------------- RUN APP ----------------
+
 if __name__ == "__main__":
     app.run(debug=True)

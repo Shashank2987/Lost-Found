@@ -8,79 +8,89 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        .feature-card{
-    transition: 0.3s;
-    cursor:pointer;
-}
 
-.feature-card:hover{
-    transform: translateY(-8px);
-}
+        :root{
+            --primary:#6366f1;
+            --primary-hover:#4f46e5;
+            --success:#22c55e;
+            --danger:#ef4444;
+            --bg:#0f172a;
+            --card:rgba(255,255,255,0.06);
+            --text:#f8fafc;
+            --muted:#94a3b8;
+        }
 
-.glass{
-    box-shadow:
-        0 8px 32px rgba(0,0,0,0.2);
-}
         *{
             margin:0;
             padding:0;
             box-sizing:border-box;
+            transition: all .2s ease;
         }
 
         body{
-            background:#0b1020;
-            color:white;
-            overflow-x:hidden;
             min-height:100vh;
-            font-family:Inter,Segoe UI,sans-serif;
-        }
-
-        .gradient-bg{
-            position:fixed;
-            inset:0;
-            z-index:-1;
-
             background:
-            radial-gradient(circle at 20% 20%, rgba(99,102,241,.4), transparent 30%),
-            radial-gradient(circle at 80% 30%, rgba(168,85,247,.3), transparent 30%),
-            radial-gradient(circle at 50% 80%, rgba(59,130,246,.25), transparent 40%),
-            #0b1020;
+                radial-gradient(circle at top left,
+                rgba(99,102,241,.25),
+                transparent 35%),
+
+                radial-gradient(circle at bottom right,
+                rgba(34,197,94,.15),
+                transparent 35%),
+
+                #0f172a;
+
+            color:var(--text);
         }
 
+        html{
+            scroll-behavior:smooth;
+        }
+
+        /* NAVBAR */
         .navbar{
-            background:transparent !important;
-            padding:20px 0;
+            position:sticky;
+            top:0;
+            z-index:1000;
+
+            backdrop-filter:blur(20px);
+            background:rgba(15,23,42,.6) !important;
+
+            border-bottom:1px solid rgba(255,255,255,.08);
+            padding:15px 0;
         }
 
         .navbar-brand{
-            font-weight:700;
-            font-size:1.4rem;
+            font-weight:800;
             color:white !important;
         }
 
+        /* GLASS CARD */
         .glass{
-            background:rgba(255,255,255,.05);
-            border:1px solid rgba(255,255,255,.1);
-            backdrop-filter:blur(12px);
+            background:var(--card);
+            border:1px solid rgba(255,255,255,.08);
+            backdrop-filter:blur(20px);
+
+            box-shadow:
+                0 8px 32px rgba(0,0,0,.25),
+                inset 0 1px 0 rgba(255,255,255,.05);
+
+            border-radius:16px;
         }
 
+        /* BUTTONS */
         .btn-main{
-            background:linear-gradient(
-                135deg,
-                #6366f1,
-                #8b5cf6
-            );
-
+            background:linear-gradient(135deg, var(--primary), #8b5cf6);
             border:none;
             color:white;
-            padding:12px 24px;
+            padding:10px 18px;
             border-radius:12px;
             font-weight:600;
-            transition:.3s;
         }
 
         .btn-main:hover{
             transform:translateY(-2px);
+            background:linear-gradient(135deg, var(--primary-hover), #7c3aed);
             color:white;
         }
 
@@ -88,10 +98,8 @@
             background:rgba(255,255,255,.08);
             border:1px solid rgba(255,255,255,.15);
             color:white;
-            backdrop-filter:blur(10px);
+            padding:10px 18px;
             border-radius:12px;
-            padding:12px 24px;
-            transition:.3s;
         }
 
         .btn-glass:hover{
@@ -99,84 +107,107 @@
             color:white;
         }
 
-        .hero{
-            min-height:90vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
+        .btn-danger{
+            border-radius:12px;
         }
 
-        .hero h1{
-            font-size:5rem;
-            font-weight:800;
-            line-height:1.05;
-        }
-
-        .hero p{
-            color:#cbd5e1;
-            max-width:700px;
-            margin:auto;
-            font-size:1.2rem;
-        }
-
-        .feature-card{
-            padding:30px;
-            border-radius:20px;
-            height:100%;
-            transition:.3s;
-        }
-
-        .feature-card:hover{
-            transform:translateY(-8px);
-        }
-
+        /* FORMS */
         .form-control{
             background:rgba(255,255,255,.08);
             border:1px solid rgba(255,255,255,.15);
             color:white;
+            border-radius:12px;
         }
 
         .form-control:focus{
             background:rgba(255,255,255,.12);
             color:white;
-            border-color:#6366f1;
+            border-color:var(--primary);
             box-shadow:none;
         }
 
         .form-control::placeholder{
-            color:#94a3b8;
+            color:var(--muted);
         }
 
+        /* FEATURE CARDS */
+        .feature-card{
+            transition:.3s;
+            cursor:pointer;
+        }
+
+        .feature-card:hover{
+            transform:translateY(-8px) scale(1.02);
+        }
+
+        /* TEXT */
         .text-secondary{
-            color:#94a3b8 !important;
+            color:var(--muted) !important;
         }
+        select.form-control{
+    background: rgba(255,255,255,0.08) !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
 
+/* Dropdown options (fix invisible text) */
+select option{
+    background: #1e293b;
+    color: #f8fafc;
+}
     </style>
-
 </head>
 
 <body>
 
-<div class="gradient-bg"></div>
-
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
 
     <div class="container">
 
-        <a class="navbar-brand" href="/">
-            🎓 CampusFind
+        <!-- BRAND -->
+        <a class="navbar-brand d-flex flex-column" href="/">
+
+            <span>📦 CampusFind</span>
+
+            <small style="font-size:.7rem; color:#94a3b8;">
+                Recover. Reconnect.
+            </small>
+
         </a>
 
-        <div class="d-flex gap-2">
+        <!-- NAV LINKS -->
+        <div class="d-flex gap-2 align-items-center">
 
-            <a href="/login" class="btn btn-glass">
-                Login
-            </a>
+            {% if current_user.is_authenticated %}
 
-            <a href="/register" class="btn btn-main">
-                Register
-            </a>
+                <a href="/dashboard" class="btn btn-glass">
+                    Dashboard
+                </a>
+
+                <a href="/items" class="btn btn-glass">
+                    Found Items
+                </a>
+
+                <a href="/add-found" class="btn btn-main">
+                    + Report Item
+                </a>
+
+                <a href="/logout" class="btn btn-danger">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="/login" class="btn btn-glass">
+                    Login
+                </a>
+
+                <a href="/register" class="btn btn-main">
+                    Register
+                </a>
+
+            {% endif %}
 
         </div>
 
@@ -184,7 +215,8 @@
 
 </nav>
 
-<div class="container">
+<!-- PAGE CONTENT -->
+<div class="container py-4">
 
     {% block content %}
     {% endblock %}

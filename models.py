@@ -76,3 +76,5 @@ class Item(db.Model):
         db.ForeignKey("users.id"),
         nullable=False
     )
+    
+    category = db.Column(db.String(50), default="Other")
