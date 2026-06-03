@@ -83,9 +83,16 @@ def login():
 @login_required
 def dashboard():
 
+    items = Item.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Item.created_at.desc()
+    ).all()
+
     return render_template(
         "dashboard.html",
-        user=current_user
+        user=current_user,
+        items=items
     )
 @app.route("/logout")
 @login_required

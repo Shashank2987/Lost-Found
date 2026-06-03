@@ -4,30 +4,87 @@
 
 <div class="mt-5">
 
-    <h1>
-        Welcome, {{ user.name }}
-    </h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <p class="text-secondary">
-        CampusFind Dashboard
-    </p>
+        <div>
 
-    <a
-        href="/add-lost"
-        class="btn btn-main">
+            <h1>
+                Welcome, {{ user.name }}
+            </h1>
 
-        Report Lost Item
+            <p class="text-secondary">
+                Manage your lost and found items
+            </p>
 
-    </a>
+        </div>
 
-    <a
-        href="/logout"
-        class="btn btn-danger">
+        <div>
 
-        Logout
+            <a href="/add-lost" class="btn btn-main">
+                + Report Lost Item
+            </a>
 
-    </a>
+            <a href="/logout" class="btn btn-danger">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+    <h3 class="mb-4">
+        My Items
+    </h3>
+
+    {% if items %}
+
+        <div class="row">
+
+            {% for item in items %}
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="glass p-4 rounded-4">
+
+                        <h4>
+                            {{ item.title }}
+                        </h4>
+
+                        <p class="text-secondary">
+                            {{ item.description }}
+                        </p>
+
+                        <p>
+                            📍 {{ item.location }}
+                        </p>
+
+                        <span class="badge bg-danger">
+                            {{ item.status }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="glass p-5 rounded-4 text-center">
+
+            <h4>No Items Yet</h4>
+
+            <p class="text-secondary">
+                Report your first lost item.
+            </p>
+
+        </div>
+
+    {% endif %}
 
 </div>
+
 
 {% endblock %}
