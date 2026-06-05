@@ -13,71 +13,63 @@
 
         <p class="text-secondary mx-auto" style="max-width:600px;">
             Browse all items that have been found across campus.
-            If something belongs to you, you can view details and claim it.
+            Find something that belongs to you and view its details.
         </p>
 
     </div>
 
-    <!-- Search Bar (UI only for now) -->
-    <form method="GET" action="/items" class="mb-4">
+    <!-- Live Search -->
+    <div class="mb-5">
 
-    <div class="input-group">
-
-        <input type="text"
-               name="q"
-               class="form-control p-3"
-               placeholder="Search wallets, keys, IDs..."
-               value="{{ search_query if search_query else '' }}">
-
-        <button class="btn btn-main">
-            Search
-        </button>
+        <input
+            type="text"
+            id="searchInput"
+            class="form-control p-3"
+            placeholder="Search wallets, keys, IDs, laptops..."
+        >
 
     </div>
 
-</form>
-
     <!-- Items Grid -->
-     {% if search_query %}
-
-    <p class="text-secondary mb-3">
-
-        Showing results for:
-        <b>{{ search_query }}</b>
-
-    </p>
-
-{% endif %}
     <div class="row">
 
         {% for item in items %}
 
         <div class="col-md-6 col-lg-4 mb-4">
 
-            <div class="glass rounded-4 p-4 h-100 feature-card">
+            <div class="glass rounded-4 p-4 h-100 feature-card item-card">
 
-                <!-- Title + Badge -->
-                <div class="d-flex justify-content-between align-items-start">
+                <!-- Top Row -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
 
                     <h5 class="fw-bold mb-0">
                         {{ item.title }}
                     </h5>
 
-                    <span class="badge bg-success px-3 py-2">
+                    <span class="badge bg-success">
                         FOUND
                     </span>
 
                 </div>
 
+                <!-- Category -->
+                <div class="mb-3">
+
+                    <span class="badge bg-primary">
+                        {{ item.category }}
+                    </span>
+
+                </div>
+
                 <!-- Description -->
-                <p class="text-secondary mt-3">
+                <p class="text-secondary">
                     {{ item.description }}
                 </p>
 
                 <hr style="border-color:rgba(255,255,255,0.1);">
 
                 <!-- Location -->
-                <p class="mb-1">
+                <p class="mb-2">
                     📍 {{ item.location }}
                 </p>
 
@@ -86,14 +78,12 @@
                     Found on {{ item.created_at.strftime('%d %b %Y') }}
                 </small>
 
-                <!-- View Button -->
+                <!-- Button -->
                 <div class="mt-4 d-grid">
 
                     <a href="/item/{{ item.id }}"
                        class="btn btn-glass">
-
                         View Details
-
                     </a>
 
                 </div>
@@ -109,22 +99,51 @@
     <!-- Empty State -->
     {% if items|length == 0 %}
 
-        <div class="text-center glass p-5 mt-4">
+    <div class="glass text-center p-5">
 
-            <h3>📭 No Items Found</h3>
+        <h3>
+            📭 No Items Found
+        </h3>
 
-            <p class="text-secondary mt-2">
-                No found items have been reported yet.
-            </p>
+        <p class="text-secondary mt-3">
+            No found items have been reported yet.
+        </p>
 
-            <a href="/add-found" class="btn btn-main mt-3">
-                Report First Item
-            </a>
+        <a href="/add-found" class="btn btn-main mt-3">
+            Report First Item
+        </a>
 
-        </div>
+    </div>
 
     {% endif %}
 
 </div>
+
+<!-- Live Search Script -->
+<script>
+
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("keyup", function() {
+
+    const search = this.value.toLowerCase();
+
+    const cards = document.querySelectorAll(".item-card");
+
+    cards.forEach(card => {
+
+        const text = card.innerText.toLowerCase();
+
+        if (text.includes(search)) {
+            card.parentElement.style.display = "";
+        } else {
+            card.parentElement.style.display = "none";
+        }
+
+    });
+
+});
+
+</script>
 
 {% endblock %}
