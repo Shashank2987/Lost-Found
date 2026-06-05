@@ -162,17 +162,34 @@ def add_found():
 
 # ---------------- ITEMS FEED (FOUND ONLY) ----------------
 
+from sqlalchemy import or_
+
 @app.route("/items")
 @login_required
 def items():
 
-    all_items = Item.query.filter_by(
-        status="FOUND"
-    ).order_by(
-        Item.created_at.desc()
-    ).all()
+    search_query = request.args.get("q")
 
-    return render_template("items.html", items=all_items)
+    query = Item.query.filter_by(status="FOUND")
+
+    # If user searched something
+    if search_query:
+
+        query = query.filter(
+            or_(
+                Item.title.ilike(f"%{search_query}%"),
+                Item.description.ilike(f"%{search_query}%"),
+                Item.location.ilike(f"%{search_query}%")
+            )
+        )
+
+    all_items = query.order_by(Item.created_at.desc()).all()
+
+    return render_template(
+        "items.html",
+        items=all_items,
+        search_query=search_query
+    )
 
 
 # ---------------- DELETE ITEM ----------------

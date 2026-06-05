@@ -19,15 +19,35 @@
     </div>
 
     <!-- Search Bar (UI only for now) -->
-    <div class="mb-4">
+    <form method="GET" action="/items" class="mb-4">
+
+    <div class="input-group">
 
         <input type="text"
+               name="q"
                class="form-control p-3"
-               placeholder="Search items (wallets, keys, IDs...)">
+               placeholder="Search wallets, keys, IDs..."
+               value="{{ search_query if search_query else '' }}">
+
+        <button class="btn btn-main">
+            Search
+        </button>
 
     </div>
 
+</form>
+
     <!-- Items Grid -->
+     {% if search_query %}
+
+    <p class="text-secondary mb-3">
+
+        Showing results for:
+        <b>{{ search_query }}</b>
+
+    </p>
+
+{% endif %}
     <div class="row">
 
         {% for item in items %}
