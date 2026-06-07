@@ -142,11 +142,12 @@ def add_found():
 
         # OPTIONAL (if you added category)
         category = request.form.get("category", "Other")
-
+        campus = request.form["campus"]
         new_item = Item(
             title=title,
             description=description,
             location=location,
+            campus=campus,
             category=category,
             status="FOUND",
             user_id=current_user.id
@@ -168,27 +169,24 @@ from sqlalchemy import or_
 @login_required
 def items():
 
-    search_query = request.args.get("q")
+    category = request.args.get("category")
+    campus = request.args.get("campus")
 
     query = Item.query.filter_by(status="FOUND")
 
-    # If user searched something
-    if search_query:
+    if category and category != "All":
+        query = query.filter_by(category=category)
 
-        query = query.filter(
-            or_(
-                Item.title.ilike(f"%{search_query}%"),
-                Item.description.ilike(f"%{search_query}%"),
-                Item.location.ilike(f"%{search_query}%")
-            )
-        )
+    if campus and campus != "All":
+        query = query.filter_by(campus=campus)
 
-    all_items = query.order_by(Item.created_at.desc()).all()
+    all_items = query.order_by(
+        Item.created_at.desc()
+    ).all()
 
     return render_template(
         "items.html",
-        items=all_items,
-        search_query=search_query
+        items=all_items
     )
 
 
@@ -219,7 +217,33 @@ def item_detail(item_id):
 
     return render_template("item_detail.html", item=item)
 
+#-------------EDIT_ROUNTE------------
+@app.route("/edit-item/<int:item_id>", methods=["GET", "POST"])
+@login_required
+def edit_item(item_id):
 
+    item = Item.query.get_or_404(item_id)
+
+    # Only owner can edit
+    if item.user_id != current_user.id:
+        return "Unauthorized", 403
+
+    if request.method == "POST":
+
+        item.title = request.form["title"]
+        item.description = request.form["description"]
+        item.location = request.form["location"]
+        item.category = request.form["category"]
+        item.campus = request.form["campus"]
+
+        db.session.commit()
+
+        return redirect("/dashboard")
+
+    return render_template(
+        "edit_item.html",
+        item=item
+    )
 # ---------------- RUN APP ----------------
 
 if __name__ == "__main__":

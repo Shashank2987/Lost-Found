@@ -78,3 +78,9 @@ class Item(db.Model):
     )
     
     category = db.Column(db.String(50), default="Other")
+
+    campus = db.Column(
+    db.String(50),
+    nullable=False,
+    default="JIIT Sec-128"
+    )

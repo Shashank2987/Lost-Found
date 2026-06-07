@@ -10,26 +10,15 @@
 
             <div class="glass p-5 rounded-4">
 
-                <!-- Header -->
-                <div class="text-center mb-5">
-
-                    <h1 class="fw-bold">
-                        📦 Report Found Item
-                    </h1>
-
-                    <p class="text-secondary">
-                        Help reunite someone with their belongings.
-                    </p>
-
-                </div>
+                <h1 class="fw-bold mb-4">
+                    ✏️ Edit Item
+                </h1>
 
                 <form method="POST">
 
-                    <!-- Title -->
-
                     <div class="mb-4">
 
-                        <label class="form-label fw-semibold">
+                        <label class="form-label">
                             Item Title
                         </label>
 
@@ -37,27 +26,28 @@
                             type="text"
                             name="title"
                             class="form-control"
-                            placeholder="Black Wallet, AirPods Pro, Student ID..."
+                            value="{{ item.title }}"
                             required
                         >
 
                     </div>
 
-                    <!-- Category + Campus -->
-
                     <div class="row mb-4">
 
                         <div class="col-md-6">
 
-                            <label class="form-label fw-semibold">
-                                📂 Category
+                            <label class="form-label">
+                                Category
                             </label>
 
                             <select
                                 name="category"
                                 class="form-control"
-                                required
                             >
+
+                                <option value="{{ item.category }}">
+                                    {{ item.category }}
+                                </option>
 
                                 <option value="Wallet">Wallet</option>
                                 <option value="ID Card">ID Card</option>
@@ -73,15 +63,18 @@
 
                         <div class="col-md-6">
 
-                            <label class="form-label fw-semibold">
-                                🏫 Campus
+                            <label class="form-label">
+                                Campus
                             </label>
 
                             <select
                                 name="campus"
                                 class="form-control"
-                                required
                             >
+
+                                <option value="{{ item.campus }}">
+                                    {{ item.campus }}
+                                </option>
 
                                 <option value="JIIT Sec-128">
                                     JIIT Sec-128
@@ -97,54 +90,52 @@
 
                     </div>
 
-                    <!-- Location -->
-
                     <div class="mb-4">
 
-                        <label class="form-label fw-semibold">
-                            📍 Location Found
+                        <label class="form-label">
+                            Location
                         </label>
 
                         <input
                             type="text"
                             name="location"
                             class="form-control"
-                            placeholder="Library, Cafeteria, LT-3, Academic Block..."
+                            value="{{ item.location }}"
                             required
                         >
 
                     </div>
 
-                    <!-- Description -->
-
                     <div class="mb-4">
 
-                        <label class="form-label fw-semibold">
-                            📝 Description
+                        <label class="form-label">
+                            Description
                         </label>
 
                         <textarea
                             name="description"
                             rows="5"
                             class="form-control"
-                            placeholder="Describe the item, color, brand, identifying marks..."
                             required
-                        ></textarea>
+                        >{{ item.description }}</textarea>
 
                     </div>
 
-                    <!-- Submit -->
-
-                    <div class="d-grid">
+                    <div class="d-flex gap-2">
 
                         <button
                             type="submit"
-                            class="btn btn-main py-3"
+                            class="btn btn-main"
                         >
-
-                            Report Found Item
-
+                            Save Changes
                         </button>
+
+                        <a
+                            href="/dashboard"
+                            class="btn btn-glass"
+                        >
+                            Cancel
+                        </a>
 
                     </div>
 

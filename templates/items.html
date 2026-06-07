@@ -29,7 +29,53 @@
         >
 
     </div>
+    <div class="glass p-3 rounded-4 mb-4">
 
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <select
+                id="categoryFilter"
+                class="form-control">
+
+                <option value="all">All Categories</option>
+
+                <option value="wallet">Wallet</option>
+                <option value="id card">ID Card</option>
+                <option value="electronics">Electronics</option>
+                <option value="books">Books</option>
+                <option value="bags">Bags</option>
+                <option value="keys">Keys</option>
+                <option value="other">Other</option>
+
+            </select>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <select
+                id="campusFilter"
+                class="form-control">
+
+                <option value="all">All Campuses</option>
+
+                <option value="jiit sec-128">
+                    JIIT Sec-128
+                </option>
+
+                <option value="jiit sec-62">
+                    JIIT Sec-62
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</div>
     <!-- Items Grid -->
     <div class="row">
 
@@ -69,9 +115,15 @@
                 <hr style="border-color:rgba(255,255,255,0.1);">
 
                 <!-- Location -->
-                <p class="mb-2">
-                    📍 {{ item.location }}
-                </p>
+                <!-- Campus -->
+<p class="mb-2">
+    🏫 {{ item.campus }}
+</p>
+
+<!-- Location -->
+<p class="mb-2">
+    📍 {{ item.location }}
+</p>
 
                 <!-- Date -->
                 <small class="text-secondary">
@@ -120,30 +172,59 @@
 </div>
 
 <!-- Live Search Script -->
+...
+
+{% if items|length == 0 %}
+
+<div class="glass text-center p-5">
+    ...
+</div>
+
+{% endif %}
+
+<!-- SEARCH + FILTER SCRIPT -->
 <script>
 
 const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const campusFilter = document.getElementById("campusFilter");
 
-searchInput.addEventListener("keyup", function() {
+function filterCards() {
 
-    const search = this.value.toLowerCase();
+    const search = searchInput.value.toLowerCase();
+    const category = categoryFilter.value.toLowerCase();
+    const campus = campusFilter.value.toLowerCase();
 
-    const cards = document.querySelectorAll(".item-card");
-
-    cards.forEach(card => {
+    document.querySelectorAll(".item-card").forEach(card => {
 
         const text = card.innerText.toLowerCase();
 
-        if (text.includes(search)) {
-            card.parentElement.style.display = "";
-        } else {
-            card.parentElement.style.display = "none";
-        }
+        const matchSearch =
+            text.includes(search);
+
+        const matchCategory =
+            category === "all" ||
+            text.includes(category);
+
+        const matchCampus =
+            campus === "all" ||
+            text.includes(campus);
+
+        card.parentElement.style.display =
+            (matchSearch && matchCategory && matchCampus)
+            ? ""
+            : "none";
 
     });
 
-});
+}
+
+searchInput.addEventListener("keyup", filterCards);
+categoryFilter.addEventListener("change", filterCards);
+campusFilter.addEventListener("change", filterCards);
 
 </script>
 
 {% endblock %}
+
+

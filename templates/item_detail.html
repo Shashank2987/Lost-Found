@@ -45,17 +45,25 @@
 
             <div class="col-md-6">
 
-                <div class="glass p-3 rounded-4">
+                <div class="mt-4">
 
-                    <h6 class="text-secondary">
-                        Location Found
-                    </h6>
+    <p>
+        🏫 <b>Campus:</b> {{ item.campus }}
+    </p>
 
-                    <p class="mb-0">
-                        📍 {{ item.location }}
-                    </p>
+    <p>
+        📍 <b>Location:</b> {{ item.location }}
+    </p>
 
-                </div>
+    <p>
+        📂 <b>Category:</b> {{ item.category }}
+    </p>
+
+    <p>
+        📅 <b>Found on:</b> {{ item.created_at.strftime('%d %b %Y') }}
+    </p>
+
+</div>
 
             </div>
 
