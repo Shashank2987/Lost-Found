@@ -11,9 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from models import db, User, Item
 
-
-# ---------------- APP INIT ----------------
-
+#For Initialization of the app
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -24,27 +22,23 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 
-# ---------------- USER LOADER ----------------
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# ---------------- CREATE TABLES ----------------
-
 with app.app_context():
     db.create_all()
 
 
-# ---------------- HOME ----------------
+#home
 
 @app.route("/")
 def home():
     return render_template("home.html")
 
 
-# ---------------- REGISTER ----------------
+#register
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -76,7 +70,7 @@ def register():
     return render_template("register.html")
 
 
-# ---------------- LOGIN ----------------
+# login page
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -98,7 +92,7 @@ def login():
     return render_template("login.html")
 
 
-# ---------------- DASHBOARD ----------------
+#dashboard page
 
 @app.route("/dashboard")
 @login_required
@@ -118,7 +112,7 @@ def dashboard():
     )
 
 
-# ---------------- LOGOUT ----------------
+# logout
 
 @app.route("/logout")
 @login_required
@@ -140,7 +134,7 @@ def add_found():
         description = request.form["description"]
         location = request.form["location"]
 
-        # OPTIONAL (if you added category)
+        
         category = request.form.get("category", "Other")
         campus = request.form["campus"]
         new_item = Item(
@@ -161,7 +155,7 @@ def add_found():
     return render_template("add_found.html")
 
 
-# ---------------- ITEMS FEED (FOUND ONLY) ----------------
+# items
 
 from sqlalchemy import or_
 
@@ -190,7 +184,7 @@ def items():
     )
 
 
-# ---------------- DELETE ITEM ----------------
+# delete
 
 @app.route("/delete-item/<int:item_id>")
 @login_required
@@ -207,7 +201,7 @@ def delete_item(item_id):
     return redirect("/dashboard")
 
 
-# ---------------- ITEM DETAIL PAGE ----------------
+# -item 
 
 @app.route("/item/<int:item_id>")
 @login_required
@@ -217,7 +211,7 @@ def item_detail(item_id):
 
     return render_template("item_detail.html", item=item)
 
-#-------------EDIT_ROUNTE------------
+#edit
 @app.route("/edit-item/<int:item_id>", methods=["GET", "POST"])
 @login_required
 def edit_item(item_id):
